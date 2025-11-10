@@ -55,11 +55,11 @@ flowchart LR
     stream_proc -->|"Real-time status"| dash
     dw -->|"Historical trends"|dash
 
-    classDef sourceStyle fill:#e3f2fd,stroke:#1976d2
-    classDef ingestStyle fill:#fff3e0,stroke:#f57c00
-    classDef coldStyle fill:#f3e5f5,stroke:#7b1fa2
-    classDef hotStyle fill:#ffebee,stroke:#d32f2f
-    classDef presentStyle fill:#fce4ec,stroke:#c2185b
+    classDef sourceStyle fill:#e3f2fd,stroke:#1976d2,color:#000
+    classDef ingestStyle fill:#fff3e0,stroke:#f57c00,color:#000
+    classDef coldStyle fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    classDef hotStyle fill:#ffebee,stroke:#d32f2f,color:#000
+    classDef presentStyle fill:#fce4ec,stroke:#c2185b,color:#000
 
     class cattle,weather,soil,pollution sourceStyle
     class broker ingestStyle
@@ -98,9 +98,9 @@ flowchart LR
     model_eval --> model
     model_eval --> report
 
-    classDef data fill:#e3f2fd,stroke:#1976d2
-    classDef process fill:#f3e5f5,stroke:#7b1fa2
-    classDef output fill:#fce4ec,stroke:#c2185b
+    classDef data fill:#e3f2fd,stroke:#1976d2,color:#000
+    classDef process fill:#f3e5f5,stroke:#7b1fa2,color:#000
+    classDef output fill:#fce4ec,stroke:#c2185b,color:#000
 
     class csvs data
     class load,feature_eng,split,model_train,model_eval process
