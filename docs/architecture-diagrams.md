@@ -52,8 +52,8 @@ flowchart LR
     broker --> lake
     broker --> stream_proc
     stream_proc --> alerts --> realtime_alert
-    stream_proc -->|"Real-time status"| dash
-    dw -->|"Historical trends"|dash
+    stream_proc -->|"Real-Time Status"| dash
+    dw -->|"Historical Trends"|dash
 
     classDef sourceStyle fill:#e3f2fd,stroke:#1976d2,color:#000
     classDef ingestStyle fill:#fff3e0,stroke:#f57c00,color:#000
