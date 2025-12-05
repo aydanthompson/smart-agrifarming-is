@@ -5,6 +5,7 @@
 ```mermaid
 flowchart LR
     subgraph sources["DATA SOURCES"]
+        direction LR
         cattle[Cattle IMU Sensors]
         weather[Weather Sensors]
         soil[Soil Sensors]
