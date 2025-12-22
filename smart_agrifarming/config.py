@@ -6,7 +6,6 @@ CACHE_PATH = DATA_DIR / "master.parquet"
 TIME_COL = "Time"
 ID_COL = "Device ID"
 ACTIVITY_COL = "Activity"
-PITCH_COL = "pitch"
 SENSOR_COLS = [
     "BNO055_ARX",
     "BNO055_ARY",
@@ -34,4 +33,3 @@ SENSOR_COLS = [
     "MPU9250_MY",
     "MPU9250_MZ",
 ]
-FEATURE_COLS = SENSOR_COLS + [PITCH_COL]
