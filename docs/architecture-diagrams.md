@@ -69,41 +69,51 @@ flowchart LR
     class dash,realtime_alert presentStyle
 ```
 
-## PoC Implementation
+## Cattle Activity Pipeline
+
+Pipeline diagram associated with the cattle activity detection PoC (model.ipynb).
 
 ```mermaid
 flowchart LR
-    subgraph input_data["Labeled Training Data"]
-        direction LR
-        csvs["~450/~50MB Labeled CSVs<br>(e.g., walking, grazing)"]
+    subgraph ingestion["Ingestion"]
+        data_lake["Simulated Data Lake<br>(IMU CSVs)"]
+        combine["Transform Data<br>(e.g., combine CSVs,<br>add activity column)"]
+        cache["Simulated Data Warehouse<br>(Parquet Cache)"]
     end
 
-    subgraph jupyter["PoC"]
-        direction LR
-        load["1. Load and Label<br>(Combine all files into one dataset)"]
-        feature_eng["2. Feature Engineering<br>(TBD)"]
-        split["3. Split Datasets<br>(e.g., 80% for training, 20% for testing)"]
-        model_train["4. Train<br/>(e.g., `RandomForest.fit(x_train, y_train)`)"]
-        model_eval["5. Evaluate Model<br>(e.g., `accuracy_score(y_test, predictions)`)"]
-
-        load --> feature_eng --> split --> model_train --> model_eval
+    subgraph preprocessing["Preprocessing"]
+        direction TB
+        windowing["Windowing<br>(Sliding Window)"]
+        features["Feature Engineering<br>(e.g., μ, σ, SMA, FFT)"]
+        scaling["Feature Scaling"]
+        test_train_split["Train/Test Split"]
+        smote["Fix Class Imbalance<br>(SMOTE)"]
     end
 
-    subgraph output["Outputs"]
-        direction LR
-        model["Saved Model"]
-        report["Validation Report<br>(e.g., accuracy scores)"]
+    subgraph model["Modelling"]
+        train["Train Models<br>(RFC and SVC)"]
+        evaluation["Evaluation<br>(Confusion Matrix<br>and F1 Score)"]
+        output["Save Models<br>(model.pkl)"]
     end
 
-    csvs --> load
-    model_eval --> model
-    model_eval --> report
+    data_lake --> combine
+    combine --> cache
+    cache --> windowing
+    windowing --> features
+    features --> test_train_split
+    test_train_split -->|"Train Set"| scaling
+    test_train_split -->|"Test Set"| scaling
+    scaling -->|"Train Set"| smote
+    smote --> train
+    train --> evaluation
+    scaling -->|"Test Set"| evaluation
+    train --> output
 
-    classDef data fill:#e3f2fd,stroke:#1976d2,color:#000
-    classDef process fill:#f3e5f5,stroke:#7b1fa2,color:#000
-    classDef output fill:#fce4ec,stroke:#c2185b,color:#000
+    classDef dataStyle fill:#e3f2fd,stroke:#0d47a1,color:#000
+    classDef processStyle fill:#e8f5e9,stroke:#1b5e20,color:#000
+    classDef modelStyle fill:#f3e5f5,stroke:#7b1fa2,color:#000
 
-    class csvs data
-    class load,feature_eng,split,model_train,model_eval process
-    class model,report output
+    class data_lake,combine,cache dataStyle
+    class windowing,features,test_train_split,smote,scaling processStyle
+    class train,evaluation,output modelStyle
 ```
