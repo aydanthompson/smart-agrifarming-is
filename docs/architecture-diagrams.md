@@ -76,7 +76,7 @@ flowchart LR
     class dashboard,api presentationStyle
 ```
 
-## Compute-Capable IoT Sensors
+### Compute-Capable IoT Sensors
 
 Some sensors, namely the IMU sensors, generate more data than LoRaWAN can realistically handle. This issue can be solved by performing some/all of the data transformation/analysis on the wearable.
 
@@ -100,7 +100,7 @@ flowchart LR
     class imu,mp,radio sensorStyle
 ```
 
-## Smart LoRaWAN Gateway
+### Smart LoRaWAN Gateway
 
 The smart LoRaWAN gateways provide edge processing capabilities at the expense of decrypting the LoRa transmissions on-site. In a typical "dumb" gateway (packet forwarder only), the gateway has no offline capabilities, so if the network connection is lost, the gateway is lost too. In this "smart" configuration, provided power is still provided to the gateway, edge processing and batching can continue, and when the network connection is resumed, the batched data can be published.
 
