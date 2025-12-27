@@ -59,7 +59,6 @@ flowchart LR
     gold --> dashboard
     training --> registry
     registry --> device_manager
-    device_manager --> gateway_2
     silver -->|"Historical Data"| training
 
     classDef sensorStyle fill:#fffcc2,stroke:#dad734,color:#000
