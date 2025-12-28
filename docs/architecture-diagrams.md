@@ -6,6 +6,8 @@ Pipeline diagram for Suffolk Farm's smart agrifarming system.
 
 **This diagram does not show the connection between the IoT device manager and the gateways due to rendering constraints.** Updated models are distributed to the gateways over-the-air (OTA), a closed-loop MLOps cycle, ensuring the most recently trained models are in-use at the edge.
 
+External data (i.e., data not collected by the farm's own sensors) can be ingested into the system via scheduled polling functions that request data via available APIs and normalise the responses into MQTT messages, entering the pipeline alongside sensor data. This ensures that minimal bespoke logic is required to make use of external sources.
+
 ```mermaid
 flowchart LR
     subgraph farm["Farm"]
@@ -23,7 +25,7 @@ flowchart LR
     end
 
     external_sources(("External Sources<br>(e.g., satellite imagery)"))
-    external_sources --> stream_processor
+    external_sources -->|"MQTT (Publish)"| broker
 
     subgraph cloud["Cloud"]
         subgraph ingestion["Ingestion"]
