@@ -4,6 +4,8 @@
 
 Pipeline diagram for Suffolk Farm's smart agrifarming system.
 
+**This diagram does not show the connection between the IoT device manager and the gateways due to rendering constraints.** Updated models are distributed to the gateways over-the-air (OTA), a closed-loop MLOps cycle, ensuring the most recently trained models are in-use at the edge.
+
 ```mermaid
 flowchart LR
     subgraph farm["Farm"]
