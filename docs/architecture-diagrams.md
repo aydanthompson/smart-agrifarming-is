@@ -18,15 +18,16 @@ flowchart LR
             gateway_1(("Smart<br>LoRaWAN<br>Gateway"))
             gateway_2(("Smart<br>LoRaWAN<br>Gateway"))
         end
-
     end
+
+    external_sources(("External Sources<br>(e.g., satellite imagery)"))
+    external_sources --> stream_processor
 
     subgraph cloud["Cloud"]
         subgraph ingestion["Ingestion"]
             broker["MQTT Broker"]
             stream_processor["Stream Processor<br>(e.g., Apache Flink)"]
         end
-
 
         subgraph lakehouse["Streaming Lakehouse"]
             bronze[("Bronze Data (Raw)")]
@@ -39,7 +40,6 @@ flowchart LR
             registry[("Model Registry")]
             device_manager["IoT Device Manager"]
         end
-
 
         subgraph serving["Serving"]
             dashboard["Dashboards"]
@@ -68,7 +68,7 @@ flowchart LR
     classDef mlStyle fill:#ffebee,stroke:#b71c1c,color:#000
     classDef presentationStyle fill:#fce4ec,stroke:#c2185b,color:#000
 
-    class sensors_soil,sensors_air,sensors_cattle sensorStyle
+    class sensors_soil,sensors_air,sensors_cattle,external_sources sensorStyle
     class gateway_1,gateway_2 gatewayStyle
     class broker,stream_processor ingestStyle
     class bronze,silver,gold dataStyle
