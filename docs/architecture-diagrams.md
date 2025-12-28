@@ -25,10 +25,12 @@ flowchart LR
     end
 
     external_sources(("External Sources<br>(e.g., satellite imagery)"))
-    external_sources -->|"MQTT (Publish)"| broker
+    external_sources -->|API| scheduled_polling
+    scheduled_polling -->|"MQTT (Publish)"| broker
 
     subgraph cloud["Cloud"]
         subgraph ingestion["Ingestion"]
+            scheduled_polling["Scheduled Polling"]
             broker["MQTT Broker"]
             stream_processor["Stream Processor<br>(e.g., Apache Flink)"]
         end
@@ -53,8 +55,8 @@ flowchart LR
 
     sensors_soil & sensors_air -->|LoRa| gateway_1
     sensors_cattle -->|LoRa| gateway_2
-    gateway_1 -->|"MQTT (Publish)"| broker
-    gateway_2 -->|"MQTT (Publish)"| broker
+    gateway_1 --->|"MQTT (Publish)"| broker
+    gateway_2 --->|"MQTT (Publish)"| broker
     broker -->|"MQTT (Subscribe)"| stream_processor
     stream_processor --> bronze
     stream_processor --> api
@@ -74,7 +76,7 @@ flowchart LR
 
     class sensors_soil,sensors_air,sensors_cattle,external_sources sensorStyle
     class gateway_1,gateway_2 gatewayStyle
-    class broker,stream_processor ingestStyle
+    class broker,stream_processor,scheduled_polling ingestStyle
     class bronze,silver,gold dataStyle
     class training,registry,device_manager mlStyle
     class dashboard,api presentationStyle
