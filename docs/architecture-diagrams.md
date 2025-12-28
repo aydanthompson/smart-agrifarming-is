@@ -106,24 +106,38 @@ The smart LoRaWAN gateways provide edge processing capabilities at the expense o
 
 The local MQTT broker is configured as a bridge to the broker in the cloud, enabling them to share topics. The resulting architecture becomes physically decentralised as a result.
 
+In addition to the edge compute capabilities (including model inference), the smart gateway is also capable of receiving over-the-air (OTA) updates for its stored model in a closed-loop MLOps cycle.
+
 ```mermaid
 flowchart LR
     subgraph gateway["Smart LoRaWAN Gateway"]
-        radio["LoRa Antenna<br>and Concentrator"]
+        radio["LoRa Concentrator"]
         lns["LoRaWAN Network Server<br>(e.g., ChirpStack)"]
-        broker["MQTT Broker<br>(e.g., Mosquitto)"]
 
-        radio --> lns
-        lns --> broker
+        subgraph edge_compute["Edge Compute"]
+            decoder["Payload Decoder"]
+            inference["Inference Engine<br>(e.g., TFLite Runtime)"]
+            model_store[("Local Model Store<br>(e.g., TensorFlow Lite)")]
+        end
+
+        broker["MQTT Broker<br>(e.g., Mosquitto)"]
     end
 
     sensors((IoT<br>Sensors)) -->|LoRa RF| radio
+    radio --> lns
+    lns --> decoder
+    decoder --> inference
+    model_store -.-> inference
+    inference --> broker
+    cloud_manager(("Cloud<br>Device<br>Manager")) -...->|"OTA Update"| model_store
     broker -->|MQTT| cloud((Cloud))
 
 
     classDef gatewayStyle fill:#e3f2fd,stroke:#1976d2,color:#000
+    classDef aiStyle fill:#e8f5e9,stroke:#1b5e20,color:#000
 
     class radio,lns,broker gatewayStyle
+    class decoder,inference,model_store aiStyle
 ```
 
 ## Cattle Activity Pipeline
