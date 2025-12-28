@@ -80,9 +80,9 @@ flowchart LR
 
 ### Compute-Capable IoT Sensors
 
-Some sensors, namely the IMU sensors, generate more data than LoRaWAN can realistically handle. This issue can be solved by performing some/all of the data transformation/analysis on the wearable.
+Some sensors generate more data than LoRaWAN can realistically handle. This issue can be solved by performing some of the data transformation on the wearable.
 
-The IMU sensors generate datapoints at 10Hz (10 records per second). LoRaWAN's bandwidth limitations necessitate on-board processing to reduce or batch the data being transmitted. One option is to deploy a model onto the wearable itself, either by training a small model (e.g., TinyML) or by optimising a larger one (e.g., TensorFlow converted to TensorFlow Lite), such that only the activity classification is transmitted (see PoC). Alternatively, the windowing process (see PoC) could be performed on the wearable such that only a summary needs to be transmitted over LoRa.
+For example, IMU sensors generate datapoints at 10Hz (10 records per second). LoRaWAN's bandwidth limitations necessitate on-board processing to reduce or batch the data being transmitted. Deploying even a small model onto the wearable is unrealistic due to their large size compared with the available bandwidth (a 100MB model would take days to transfer to the wearable, draining the battery), but we can still perform some basic transformation, like windowing and feature engineering, to summarise the data and reduce the bandwidth required for transmission.
 
 ```mermaid
 flowchart LR
@@ -106,9 +106,9 @@ flowchart LR
 
 The smart LoRaWAN gateways provide edge processing capabilities at the expense of decrypting the LoRa transmissions on-site. In a typical "dumb" gateway (packet forwarder only), the gateway has no offline capabilities, so if the network connection is lost, the gateway is lost too. In this "smart" configuration, provided power is still provided to the gateway, edge processing and batching can continue, and when the network connection is resumed, the batched data can be published.
 
-The local MQTT broker is configured as a bridge to the broker in the cloud, enabling them to share topics. The resulting architecture becomes physically decentralised as a result.
+To overcome the bandwidth constraints of LoRaWAN, some sensors perform their own edge compute to reduce the quantity of data that needs to be transmitted. Sensors that are part of a machine learning pipeline (e.g., cattle IMUs) perform a portion of that pipeline on the wearable (e.g., windowing and feature engineering). The gateway, after ingesting this partially transformed data, runs the model inference engine (e.g., TFLite Runtime) to complete the pipeline (e.g., infer activity from cattle IMU). This inference can be used in other edge compute, like determining whether an alert is required if a specific condition is met, ultimately reducing network usage in time-critical situations. The models used by the smart gateway (e.g., TensorFlow Lite) receive updated over-the-air (OTA) in a closed-loop MLOps cycle, ensuring the latest trained models are in use.
 
-In addition to the edge compute capabilities (including model inference), the smart gateway is also capable of receiving over-the-air (OTA) updates for its stored model in a closed-loop MLOps cycle.
+The local MQTT broker is configured as a bridge to the broker in the cloud, enabling them to share topics. The resulting architecture becomes physically decentralised as a result.
 
 ```mermaid
 flowchart LR
