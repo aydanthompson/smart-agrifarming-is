@@ -42,9 +42,9 @@ flowchart LR
         end
 
         subgraph mlops["MLOps"]
-            training["Model Training"]
-            registry[("Model Registry")]
-            device_manager["IoT Device Manager"]
+            training["Model<br>Training"]
+            registry[("Model<br>Registry")]
+            device_manager["IoT<br>Device<br>Manager"]
         end
 
         subgraph serving["Serving"]
@@ -63,9 +63,9 @@ flowchart LR
     bronze --> silver
     silver --> gold
     gold --> dashboard
-    training --> registry
-    registry --> device_manager
     silver -->|"Historical Data"| training
+    training -->|"New Model"| registry
+    registry -->|"Deploy"| device_manager
 
     classDef sensorStyle fill:#fffcc2,stroke:#dad734,color:#000
     classDef gatewayStyle fill:#e3f2fd,stroke:#1976d2,color:#000
