@@ -63,7 +63,7 @@ flowchart LR
     bronze --> silver
     silver --> gold
     gold --> dashboard
-    silver -->|"Historical Data"| training
+    silver --> training
     training -->|"New Model"| registry
     registry -->|"Deploy"| device_manager
 
