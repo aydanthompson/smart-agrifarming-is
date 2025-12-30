@@ -148,6 +148,16 @@ flowchart LR
 
 ## Streaming Lakehouse
 
+The Streaming Lakehouse is the central storage and processing engine for Suffolk Farm. It combines the low-cost storage and flexibility of a Data Lake with the performance and ACID-compliant transactions of a Data Warehouse.
+
+Prior to the Lakehouse is the stream processor. It acts as the primary gatekeeper, performing schema enforcement to ensure anomalous or bad data is intercepted prior to entering the Lakehouse. This bad data is redirected to a dead-letter queue (DLQ) that system engineers can use to debug and resolve problematic sensors. Resolving these problems here ensures that even the bronze tier of the Lakehouse is a trustworthy source, and that critical components like the ML pipeline are protected from anomalous data.
+
+Within the Lakehouse exists the Data Plane consisting of three tiers: bronze, silver, and gold. These are generated via increasing levels of processing and transformation from the tier prior, optimised for their different use cases. First, the bronze tier ingests raw MQTT messages directly from the stream processor. This layer acts as the single source of truth (SSOT), preserving data in its original format for auditing or re-processing. Secondly, the silver tier contains data that is validated, filtered, and transformed into a structured format like Parquet. Due to the streaming component, the compaction step that takes place between the bronze and silver tiers runs frequently - this also helps combat the "small files problem" that would otherwise cause the query engine to slow to a crawl. This layer provides the data used by the cattle activity pipeline, where cleaned data is used for training and evaluating machine learning models. Finally, the gold tier contains the last level of aggregation and transformation. This tier consists of high-level metrics like average value over unit time, optimised for the query engine to serve the farm's dashboards and API notifications. Some of the data's granularity is lost at this tier for the sake of optimisation and abstraction, hence the ML pipeline consumes data from the previous tier.
+
+The transformations set to take place between each tier can be modified at any time as the raw data is always retained at the bronze tier.
+
+The Control Plane manages the metadata and transaction logs required to ensure data integrity. By utilising the Data Catalog and Access Control Lists (ACLs), sensitive information can be masked at the query engine level, and policies within the metadata ensure users see only the data relevant to their role. The Transaction Log, an immutable record of all changes, enables "time travel" capabilities, crucial for auditing, compliance, and debugging purposes. The log ensures ACID compliance, guaranteeing that data remains consistent and corruption-free.
+
 ```mermaid
 flowchart LR
     subgraph lakehouse["Streaming Lakehouse"]
