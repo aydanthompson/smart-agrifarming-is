@@ -2,6 +2,10 @@
 
 Developed as part of the final assignment for the Information Systems (IS) module at the University of Suffolk.
 
+## Diagrams
+
+Diagrams for the complete data pipeline, architecture components, and cattle activity implementation can be found in [docs/architecture-diagrams.md](docs/architecture-diagrams.md).
+
 ## Data Sources
 
 To run [model.ipynb](model.ipynb), all CSVs from the IMU dataset must be present in the data directory, e.g., data/1_Walking_1319_20240513_120009.csv.
