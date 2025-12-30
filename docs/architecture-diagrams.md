@@ -146,6 +146,58 @@ flowchart LR
     class decoder,inference,model_store aiStyle
 ```
 
+## Streaming Lakehouse
+
+```mermaid
+flowchart LR
+    subgraph lakehouse["Streaming Lakehouse"]
+        subgraph control_plane["Control Plane"]
+            acls["Governance and ACLs"]
+            log["Transaction Log<br>(ACID Compliance)"]
+            catalog[("Data Catalog")]
+
+            acls -.- catalog
+            log -.- catalog
+        end
+
+        subgraph compute_write["Compute Plane (Write)"]
+            compaction(("Compaction<br>and<br>Cleaning"))
+            aggregation(("Aggregation<br>and<br>Transformation"))
+        end
+
+        subgraph data_plane["Data Plane"]
+            bronze[("Bronze Layer<br>(e.g., JSON, Avro)")]
+            silver[("Silver Layer<br>(e.g., Parquet)")]
+            gold[("Gold Layer<br>(e.g., Parquet)")]
+        end
+
+        subgraph compute_read["Compute Plane (Read)"]
+            query_engine["Query Engine<br>(e.g., Spark)"]
+        end
+    end
+
+    dashboard((Dashboard)) --> query_engine
+    stream_processor((Stream Processor)) ---> bronze
+    bronze --> compaction
+    compaction --> silver
+    silver --> aggregation
+    aggregation --> gold
+    query_engine -.-> bronze
+    query_engine -.-> silver
+    query_engine -.-> gold
+    control_plane -.- bronze
+    control_plane -.- silver
+    control_plane -.- gold
+
+    classDef dataStyle fill:#f3e5f5,stroke:#4a148c,color:#000
+    classDef processStyle fill:#e8f5e9,stroke:#1b5e20,color:#000
+    classDef controlStyle fill:#e3f2fd,stroke:#1976d2,color:#000
+
+    class bronze,silver,gold dataStyle
+    class compaction,aggregation,query_engine processStyle
+    class acls,log,catalog controlStyle
+```
+
 ## Cattle Activity Pipeline
 
 Pipeline diagram associated with the cattle activity detection PoC (model.ipynb).
